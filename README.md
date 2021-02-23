@@ -207,3 +207,90 @@ privateDNS
 
 firewall-cmd --zone=publicweb --change-interface=eth1 --permanent
 ```
+
+___________________________________________________
+## rich rules
+
+man 5 firewalld.richlanguage
+The order is
+-> port forwarding & masquerading rules
+-> logging rules
+-> Deny rules
+
+### Create the testing zone
+```
+firewall-cmd  --permanent --new-zone=testing
+```
+
+### Add a rich rule
+```
+firewall-cmd --permanent --zone=testing --add-rich-rule='rule family="ipv4" source address="192.168.0.0/24" destination address="192.168.1.0/32" port port="8080-8090" protocol="tcp" accept'
+success
+
+firewall-cmd --permanent --zone=testing --list-rich-rules
+rule family="ipv4" source address="192.168.0.0/24" destination address="192.168.1.0/32" port port="8080-8090" protocol="tcp" accept
+
+firewall-cmd --permanent --zone=testing --remove-rich-rule='rule family="ipv4" source address="192.168.0.0/24" destination address="192.168.1.0/32" port port="8080-8090" protocol="tcp" accept'
+success
+[root@localhost centos]# firewall-cmd --permanent --zone=testing --list-rich-rules
+```
+-----------------------------------------
+### Reject traffic
+
+firewall-cmd --permanent --zone=testing --add-rich-rule='rule family="ipv4" source address="192.168.0.242/32" reject'
+success
+
+firewall-cmd --permanent --zone=testing --list-rich-rules
+rule family="ipv4" source address="192.168.0.242/32" reject
+``
+
+### Limit traffic
+```
+firewall-cmd --get-default-zone
+home
+firewall-cmd --permanent --zone=home --add-rich-rule='rule service name="http" limit value="2/m" accept'
+success
+
+firewall-cmd --permanent --zone=home --add-rich-rule='rule family="ipv4" service name="http" log prefix="http - " limit value="50/m" accept'
+success
+
+
+firewall-cmd --reload
+```
+
+### masquerading
+```
+firewall-cmd --permanent --zone=publicweb --add-masquerade
+success
+firewall-cmd --permanent --zone=publicweb --add-rich-rule='rule family=ipv4 source address="192.168.1.0/24" masquerade'
+```
+
+### port forwaring
+```
+firewall-cmd  --permanent --zone=publicweb  --add-port=2222/tcp
+firewall-cmd --permanent --zone=publicweb --add-forward-port=port=2222:proto=tcp:toport=22:toaddr=192.168.0.60
+firewall-cmd --permanent --zone=publicweb --query-forward-port=port=2222:proto=tcp:toport=22:toaddr=192.168.0.60
+firewall-cmd --permanent --zone=publicweb --add-rich-rule='rule family="ipv4" source address="192.168.0.118/32" forward-port port=2224 protocol=tcp to-port=22 to-addr=192.168.0.54'
+
+firewall-cmd --permanent --zone=publicweb --list-all
+publicweb (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: eth0
+  sources:
+  services: http https ssh
+  ports: 2222/tcp 2224/tcp
+  protocols:
+  masquerade: yes
+  forward-ports: port=2222:proto=tcp:toport=22:toaddr=192.168.0.60
+  source-ports:
+  icmp-blocks:
+  rich rules:
+        rule family="ipv4" service name="http" log prefix="http - " accept
+        rule family="ipv4" source address="192.168.1.0/24" masquerade
+        rule family="ipv4" source address="192.168.0.118/32" forward-port port="2224" protocol="tcp" to-port="22" to-addr="192.168.0.54"
+
+```
+
+
+
