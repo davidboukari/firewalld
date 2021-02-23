@@ -2,16 +2,11 @@
 
 ## Centos
 ```
-yum install  yum install iptables-services
-cat  /etc/sysconfig/iptables
-
 $ firewall-cmd --state
 running
 
 firewall-cmd --get-default-zone
-
 firewall-cmd --get-active-zone
-
 firewall-cmd --list-all
 
 firewall-cmd --get-zones
@@ -48,6 +43,7 @@ home
   source-ports:
   icmp-blocks:
   rich rules:
+...
 
 firewall-cmd --zone=home --change-interface=eth0
 success
@@ -55,7 +51,6 @@ success
 firewall-cmd --get-active-zones
 home
   interfaces: eth0
-
 
 firewall-cmd --set-default-zone=home
 
