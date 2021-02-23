@@ -1,6 +1,6 @@
-# firewalld
+# firewalld in Red Hat & Centos
 
-## Centos
+## Zones
 ```
 $ firewall-cmd --state
 running
@@ -44,7 +44,11 @@ home
   icmp-blocks:
   rich rules:
 ...
+```
 
+___________________________________________________________
+## Zones set services, interfaces
+```
 firewall-cmd --zone=home --change-interface=eth0
 success
 
@@ -68,7 +72,10 @@ cat ssh.xml
   <description>Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted communications. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful.</description>
   <port protocol="tcp" port="22"/>
 </service>
-
+```
+___________________________________________________________
+## Zones update services
+```
 firewall-cmd --zone=public --add-service=http
 success
 
@@ -87,14 +94,20 @@ $ firewall-cmd --zone=public --list-services
 dhcpv6-client http https ssh
 $ firewall-cmd --zone=public --list-services  --permanent
 dhcpv6-client http ssh
+```
 
+___________________________________________________________
+## Zones update ports 
+```
 # Add port
 firewall-cmd --zone=public --add-port=5000/tcp
 success
 firewall-cmd --zone=public --list-ports
 5000/tcp
-
-# Add custom service
+```
+___________________________________________________________
+## Add custom services
+```
 cp /usr/lib/firewalld/services/ssh.xml /usr/lib/firewalld/services/example.xml
 
 cat cat /usr/lib/firewalld/services/example.xml
@@ -112,9 +125,11 @@ firewall-cmd --reload
 success
 firewall-cmd --zone=public --add-service=example
 success
+```
 
-
-# Create customs zones
+___________________________________________________________
+## Create customs zones
+```
 firewall-cmd --permanent --new-zone=publicweb
 success
 firewall-cmd --permanent --new-zone=privateDNS
