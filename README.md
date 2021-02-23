@@ -1,6 +1,11 @@
 # firewalld in Red Hat & Centos
 
 ## Zones
+### Change active zone (change the interface)
+```
+firewall-cmd --zone=work --change-interface=eth0
+```
+
 ```
 $ firewall-cmd --state
 running
