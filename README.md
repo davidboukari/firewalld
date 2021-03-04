@@ -1,5 +1,12 @@
 # firewalld in Red Hat & Centos
 
+## Direct rules
+```
+usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>
+# firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT 0 -p tcp --dport 45000 -j ACCEPT
+success
+```
+
 ## Zones
 ### Change active zone (change the interface)
 ```
