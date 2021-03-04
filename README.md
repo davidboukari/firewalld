@@ -2,6 +2,9 @@
 
 ## Direct rules
 ```
+firewall-cmd --permanent --direct --get-all-rules
+ipv4 filter OUTPUT 0 -p tcp --dport 45000 -j ACCEPT
+
 usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>
 # firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT 0 -p tcp --dport 45000 -j ACCEPT
 success
