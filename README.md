@@ -10,6 +10,30 @@ usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <pri
 success
 ```
 
+## Add port
+### Set up firewall iptables
+```
+iptables -t filter -I INPUT  -p tcp --dport 8200 -j ACCEPT
+iptables -t filter -I OUTPUT -p tcp --sport 8200 -j ACCEPT
+
+or 
+
+# firewall-cmd --get-zones
+block dmz docker drop external home internal public trusted work
+
+# firewall-cmd --get-active-zone
+docker
+  interfaces: br-b2a185cc4932 docker0
+public
+  interfaces: ens192
+
+# firewall-cmd --zone=public --add-port=8200/tcp
+success
+
+iptables-save |grep 8200
+-A IN_public_allow -p tcp -m tcp --dport 8200 -m conntrack --ctstate NEW,UNTRACKED -j ACCEPT
+```
+
 ## Zones
 ### Change active zone (change the interface)
 ```
