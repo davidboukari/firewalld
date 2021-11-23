@@ -1,5 +1,28 @@
 # firewalld in Red Hat & Centos
 
+
+## Logging
+```
+Edit the /etc/firewalld/firewalld.conf, enter:
+sudo vi /etc/firewalld/firewalld.conf
+
+Find:
+LogDenied=off
+
+Replace:
+LogDenied=all
+
+Save and close the file in vi/vim. Restart the firewalld service, run:
+sudo systemctl restart firewalld.service
+
+OR
+sudo systemctl reload firewalld.service
+
+OR
+sudo firewall-cmd --reload
+```
+
+
 ## Direct rules
 ```
 firewall-cmd --permanent --direct --get-all-rules
